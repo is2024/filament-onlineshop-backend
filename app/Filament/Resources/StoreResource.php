@@ -13,6 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+// tambahan
+use App\Services\RajaongkirService;
+use App\Models\RajaongkirSetting;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Illuminate\Support\Collection;
+
 class StoreResource extends Resource
 {
     protected static ?string $model = Store::class;
@@ -21,42 +28,104 @@ class StoreResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $rajaongkir = new RajaongkirService();
+        $rajaongkirSetting = RajaongkirSetting::getActive();
+        $isProVersion = $rajaongkirSetting?->isPro() ?? false;
+
+        if (!$rajaongkirSetting?->is_valid) {
+            Notification::make()
+                ->title('Rajaongkir API is not valid')
+                ->body('Please configure valid Rajaongkir settings before creating a store')
+                ->danger()
+                ->send();
+
+                return $form->schema([]);
+            }
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('description')
-                    ->columnSpanFull(),
-                Forms\Components\FileUpload::make('image')
-                    ->image(),
-                Forms\Components\TextInput::make('banner')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('address')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('whatsapp')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('province_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('regency_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('subdistrict_id')
-                    ->numeric()
-                    ->default(null),
-                Forms\Components\TextInput::make('province_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('regency_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('subdistrict_name')
-                    ->maxLength(255)
-                    ->default(null),
+                Forms\Components\Group::make()
+                ->schema([
+                    Forms\Components\Section::make('Basic Information')
+                        ->description('Basic information of your online shop')
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\Textarea::make('description')
+                                ->columnSpanFull(),
+                            Forms\Components\TextInput::make('whatsapp')
+                                ->prefix('62')
+                                ->helperText('Mohon masukan nomor tanpa angka 0 diawal. Contoh 812345678900')
+                                ->placeholder('82225554808')
+                                ->required()
+                                ->numeric()
+                                ->dehydrateStateUsing(fn ($state) => '62' . ltrim($state, '62'))
+                                ->formatStateUsing(fn ($state) => ltrim($state, '62'))
+                                ->validationAttribute('Nomor WhatsApp')
+                                ->maxLength(255),
+                            Forms\Components\FileUpload::make('image')
+                                ->image()
+                                ->directory('stores'),
+                            Forms\Components\FileUpload::make('banner')
+                                ->directory('stores/banner'),
+                            ])
+                            ]),
+
+                Forms\Components\Group::make()
+                ->schema([
+                    Forms\Components\Section::make('Address')
+                        ->description('Use Rajaongkir API')
+                        ->schema([
+                            Forms\Components\Select::make('province_id')
+                                ->label('Province')
+                                ->options(fn () => $rajaongkir->getProvinces())
+                                ->default(function ($record) {
+                                    return $record?->province_id;
+                            })
+                                ->live()
+                                ->afterStateUpdated(function (Get $get, Set $set, $state) use ($rajaongkir) {
+                                    $set('regency_id', null);
+                                    $set('regency_name', null);
+
+                                if ($state) {
+                                    $provinces = $rajaongkir->getProvinces();
+                                    $set('province_name', $provinces[$state] ?? '');
+                                }
+                            })
+                            ->required(),
+
+                            Forms\Components\Select::make('regency_id')
+                                ->label('Regency')
+                                ->required()
+                                ->options(function (Get $get, $record) use ($rajaongkir) {
+                                    $provinceId = $get('province_id') ?? $record?->province_id;
+                                if (!$provinceId) {
+                                    return Collection::empty();
+                                }
+
+                                return $rajaongkir->getCities($provinceId);
+                            })
+                                ->default(function ($record) {
+                                return $record?->regency_id;
+                            })
+                                ->live()
+                                ->afterStateUpdated(function (Get $get, Set $set, $state) use ($rajaongkir) {
+                                if ($state) {
+                                    $cities = $rajaongkir->getCities($get('province_id'));
+                                    $set('regency_name', $cities[$state] ?? '');
+                                }
+                            }),
+                        Forms\Components\TextInput::make('subdistrict_id')
+                            ->numeric(),
+                        Forms\Components\TextInput::make('address')
+                            ->maxLength(255)
+
+                            ])
+                        ]),
+                        Forms\Components\Hidden::make('province_name'),
+                        Forms\Components\Hidden::make('regency_name'),
+                        Forms\Components\Hidden::make('subdistrict_name'),
+
             ]);
     }
 
