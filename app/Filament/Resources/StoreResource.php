@@ -115,16 +115,15 @@ class StoreResource extends Resource
                                     $set('regency_name', $cities[$state] ?? '');
                                 }
                             }),
-                        Forms\Components\TextInput::make('subdistrict_id')
-                            ->numeric(),
-                        Forms\Components\TextInput::make('address')
-                            ->maxLength(255)
-
+                            // Forms\Components\TextInput::make('subdistrict_id')
+                            //     ->numeric(),
+                            Forms\Components\TextInput::make('address')
+                                ->maxLength(255)
                             ])
                         ]),
-                        Forms\Components\Hidden::make('province_name'),
-                        Forms\Components\Hidden::make('regency_name'),
-                        Forms\Components\Hidden::make('subdistrict_name'),
+                            Forms\Components\Hidden::make('province_name'),
+                            Forms\Components\Hidden::make('regency_name'),
+                            // Forms\Components\Hidden::make('subdistrict_name'),
 
             ]);
     }
@@ -136,27 +135,17 @@ class StoreResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('banner')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('address')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('whatsapp')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('province_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('regency_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('subdistrict_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('province_name')
-                    ->searchable(),
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('regency_name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('subdistrict_name')
-                    ->searchable(),
+                    ->numeric()
+                    ->sortable(),
+
+                // Tables\Columns\TextColumn::make('subdistrict_name')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
