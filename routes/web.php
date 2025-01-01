@@ -9,6 +9,8 @@ use App\Livewire\OrderDetail;
 use App\Livewire\Checkout;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\PaymentConfirmation;
+use App\Livewire\Profile;
 
 
 Route::get('/', StoreShow::class)->name('home');
@@ -19,3 +21,5 @@ Route::get('/order-detail', OrderDetail::class)->name('order-detail');
 Route::get('/checkout', Checkout::class)->name('checkout');
 Route::get('login', Login::class)->name('login');
 Route::get('register', Register::class)->name('register');
+Route::get('/payment-confirmation', PaymentConfirmation::class)->name('payment-confirmation');
+Route::get('/profile', Profile::class)->name('profile');
