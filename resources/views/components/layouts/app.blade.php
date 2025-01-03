@@ -20,7 +20,12 @@
     </script>
 </head>
 <body class="bg-gray-50">
+
     {{ $slot }}
+
+    @if(!isset($hideBottomNav))
+        @livewire('components.bottom-navigation')
+    @endif
 
     <!-- Hide Scrollbar Style -->
     <style>

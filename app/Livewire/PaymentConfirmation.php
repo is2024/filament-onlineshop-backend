@@ -8,6 +8,7 @@ class PaymentConfirmation extends Component
 {
     public function render()
     {
-        return view('livewire.payment-confirmation');
+        return view('livewire.payment-confirmation')
+        ->layout('components.layouts.app', ['hideBottomNav' => true]);
     }
 }

@@ -8,6 +8,7 @@ class ProductDetail extends Component
 {
     public function render()
     {
-        return view('livewire.product-detail');
+        return view('livewire.product-detail')
+        ->layout('components.layouts.app', ['hideBottomNav' => true]);
     }
 }
