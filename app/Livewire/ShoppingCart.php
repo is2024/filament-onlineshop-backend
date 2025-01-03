@@ -9,6 +9,6 @@ class ShoppingCart extends Component
     public function render()
     {
         return view('livewire.shopping-cart')
-        ->layout('components.layouts.app', ['hideBottomNav' => true]);
+            ->layout('components.layouts.app');;
     }
 }
