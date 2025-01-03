@@ -19,7 +19,11 @@ Route::get('/shopping-cart', ShoppingCart::class)->name('shopping-cart');
 Route::get('/orders', Order::class)->name('orders');
 Route::get('/order-detail', OrderDetail::class)->name('order-detail');
 Route::get('/checkout', Checkout::class)->name('checkout');
-Route::get('login', Login::class)->name('login');
-Route::get('register', Register::class)->name('register');
+
 Route::get('/payment-confirmation', PaymentConfirmation::class)->name('payment-confirmation');
 Route::get('/profile', Profile::class)->name('profile');
+
+Route::middleware('guest')->group(function () {
+    Route::get('login', Login::class)->name('login');
+    Route::get('register', Register::class)->name('register');
+});

@@ -15,7 +15,7 @@
         <div class="pt-4">
             <div class="flex items-center gap-2 mb-4">
                 <i class="bi bi-shop text-lg text-primary"></i>
-                <span class="font-medium">Dewakoding Store</span>
+                <span class="font-medium">Naira Store</span>
             </div>
 
             <!-- Cart Items -->

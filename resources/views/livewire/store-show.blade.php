@@ -11,7 +11,7 @@
             <img src="https://dewakoding.com/user/img/logo.png" alt="Store"
                  class="w-[45px] h-[45px] brightness-0 invert transform -rotate-[5deg]">
         </div>
-        <h4 class="mt-3 mb-1 text-gray-800 font-semibold text-xl">Dewakoding Store</h4>
+        <h4 class="mt-3 mb-1 text-gray-800 font-semibold text-xl">Naira Store</h4>
         <p class="text-gray-500 text-sm">Temukan koleksi fashion terkini dengan berbagai pilihan style dan warna yang menarik.</p>
     </div>
 
@@ -147,7 +147,7 @@
             </div>
         </div>
     </div>
-    
+
 
 
 </div>

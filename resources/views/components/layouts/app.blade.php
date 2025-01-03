@@ -10,8 +10,8 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#e34234',
-                        secondary: '#458b00',
+                        primary: '#FF0000',
+                        secondary: '#000000',
                         accent: '#C7D2FE',
                     }
                 }
@@ -26,6 +26,8 @@
     @if(!isset($hideBottomNav))
         @livewire('components.bottom-navigation')
     @endif
+
+    @livewire('components.alert')
 
     <!-- Hide Scrollbar Style -->
     <style>
