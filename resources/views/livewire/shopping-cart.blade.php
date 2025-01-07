@@ -13,108 +13,87 @@
     <div class="pt-16 px-4">
         <!-- Store Section -->
         <div class="pt-4">
-            <div class="flex items-center gap-2 mb-4">
-                <i class="bi bi-shop text-lg text-primary"></i>
-                <span class="font-medium">Naira Store</span>
-            </div>
 
             <!-- Cart Items -->
             <div class="space-y-4">
-                <!-- Cart Item 1 -->
-                <div class="flex gap-3 pb-4 border-b border-gray-100">
-                    <!-- Checkbox -->
-                    <div class="pt-1">
-                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary">
-                    </div>
+                @forelse($carts as $cart)
+                    <!-- Cart Item 1 -->
+                    <div class="flex gap-3 pb-4 border-b border-gray-100">
 
-                    <!-- Product Image -->
-                    <div class="flex-shrink-0">
-                        <img src="https://i.ibb.co.com/JtLB93y/annoyed-young-pretty-girl-putting-fingers-ears-with-closed-eyes-min.jpg"
-                            alt="Kaos Polos Motif Putih"
-                            class="w-20 h-20 object-cover rounded-lg">
-                    </div>
+                        <!-- Product Image -->
+                        <div class="flex-shrink-0">
+                            <img src="{{$cart->product->first_image_url}}"
+                                alt="Kaos Polos Motif Putih"
+                                class="w-20 h-20 object-cover rounded-lg">
+                        </div>
 
-                    <!-- Product Details -->
-                    <div class="flex-1">
-                        <h3 class="text-sm font-medium line-clamp-2">Kaos Polos Motif Putih</h3>
-                        <p class="text-xs text-gray-500 mt-1">Putih, M</p>
-                        <div class="flex items-center justify-between mt-2">
-                            <span class="text-primary font-semibold">Rp125.000</span>
-                            <div class="flex items-center border border-gray-200 rounded-lg">
-                                <button class="px-2 py-1 text-gray-500 hover:text-primary">-</button>
-                                <input type="number" value="1" class="w-12 text-center border-x border-gray-200 py-1 text-sm">
-                                <button class="px-2 py-1 text-gray-500 hover:text-primary">+</button>
+                        <!-- Product Details -->
+                        <div class="flex-1">
+                            <h3 class="text-sm font-medium line-clamp-2">{{$cart->product->name}}</h3>
+
+                            <div class="flex items-center justify-between mt-2">
+                                <span class="text-primary font-semibold">Rp {{number_format($cart->product->price, 0, ',', '.')}}</span>
+                                <div class="flex items-center border border-gray-200 rounded-lg">
+                                    <button
+                                        wire:click="decrementQuantity({{$cart->id}})"
+                                        class="px-2 py-1 text-gray-500 hover:text-primary">
+                                        -
+                                    </button>
+                                    <input
+                                        type="text"
+                                        readonly
+                                        value="{{$cart->quantity}}"
+                                        class="w-12 text-center border-x border-gray-200 py-1 text-sm">
+                                    <button
+                                        wire:click="incrementQuantity({{$cart->id}})"
+                                        class="px-2 py-1 text-gray-500 hover:text-primary">
+                                            +
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @empty
+                    <div class="flex flex-col items-center justify-center min-h-[60vh]">
+                        <!-- Icon cart kosong -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <p class="text-xl font-medium text-gray-400 mb-2">Keranjang Belanja Kosong</p>
+                        <p class="text-sm text-gray-400">Belum ada produk yang ditambahkan</p>
 
-                <!-- Cart Item 2 -->
-                <div class="flex gap-3 pb-4 border-b border-gray-100">
-                    <div class="pt-1">
-                        <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary">
+                        <!-- Optional: Tambahkan tombol untuk mulai belanja -->
+                        <a href="{{ route('home') }}" class="mt-6 px-6 py-2 bg-primary text-white rounded-full text-sm hover:bg-primary/90 transition-colors">
+                            Mulai Belanja
+                        </a>
                     </div>
-                    <div class="flex-shrink-0">
-                        <img src="https://i.ibb.co.com/L0hNqt6/man-wearing-t-shirt-gesturing-min.jpg"
-                            alt="Kaos Polos Abu Motif"
-                            class="w-20 h-20 object-cover rounded-lg">
-                    </div>
-                    <div class="flex-1">
-                        <h3 class="text-sm font-medium line-clamp-2">Kaos Polos Abu Motif</h3>
-                        <p class="text-xs text-gray-500 mt-1">Abu-abu, L</p>
-                        <div class="flex items-center justify-between mt-2">
-                            <span class="text-primary font-semibold">Rp115.000</span>
-                            <div class="flex items-center border border-gray-200 rounded-lg">
-                                <button class="px-2 py-1 text-gray-500 hover:text-primary">-</button>
-                                <input type="number" value="1" class="w-12 text-center border-x border-gray-200 py-1 text-sm">
-                                <button class="px-2 py-1 text-gray-500 hover:text-primary">+</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
+
+
             </div>
         </div>
 
-        <!-- Shipping Options -->
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 class="font-medium mb-3">Pengiriman</h3>
-            <div class="flex items-center justify-between text-sm">
+
+    </div>
+
+    @if($carts->isNotEmpty())
+        <!-- Bottom Section - Price Summary & Checkout -->
+        <div class="fixed bottom-[70px] left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-100 p-4 z-50">
+            <!-- Price Summary -->
+            <div class="flex justify-between items-start mb-4">
                 <div>
-                    <p class="text-gray-600">Reguler</p>
-                    <p class="text-xs text-gray-500">Estimasi 2-3 hari</p>
+                    <p class="text-sm text-gray-600">Total Pembayaran:</p>
+                    <p class="text-lg font-semibold text-primary">Rp {{number_format($total)}}</p>
                 </div>
-                <span class="text-primary font-medium">Rp12.000</span>
-            </div>
-        </div>
-
-        <!-- Vouchers -->
-        <div class="mt-4 p-4 bg-gray-50 rounded-lg">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i class="bi bi-ticket-perforated text-primary"></i>
-                    <span class="text-sm font-medium">Voucher Toko</span>
+                <div class="text-right">
+                    <p class="text-xs text-gray-500">{{$totalItems}} Produk</p>
                 </div>
-                <button class="text-primary text-sm">Pilih Voucher</button>
             </div>
-        </div>
-    </div>
 
-    <!-- Bottom Section - Price Summary & Checkout -->
-    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t border-gray-100 p-4 z-50">
-        <!-- Price Summary -->
-        <div class="flex justify-between items-start mb-4">
-            <div>
-                <p class="text-sm text-gray-600">Total Pembayaran:</p>
-                <p class="text-lg font-semibold text-primary">Rp252.000</p>
-            </div>
-            <div class="text-right">
-                <p class="text-xs text-gray-500">2 Produk</p>
-            </div>
+            <!-- Checkout Button -->
+            <button wire:click="checkout" class="w-full h-12 flex items-center justify-center rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
+                Checkout
+            </button>
         </div>
-
-        <!-- Checkout Button -->
-        <button class="w-full h-12 flex items-center justify-center rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
-            Checkout
-        </button>
-    </div>
+    @endif
 </div>

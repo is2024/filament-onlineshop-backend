@@ -15,24 +15,17 @@
         <div class="mb-6">
             <h2 class="text-lg font-medium mb-4">Ringkasan Pesanan</h2>
             <div class="space-y-4">
-                <!-- Sample Product 1 -->
-                <div class="flex gap-3">
-                    <img src="/api/placeholder/80/80" alt="Product 1" class="w-20 h-20 object-cover rounded-lg">
-                    <div class="flex-1">
-                        <h3 class="text-sm font-medium line-clamp-2">Kemeja Putih Casual</h3>
-                        <div class="text-sm text-gray-500 mt-1">2 x Rp 150,000</div>
-                        <div class="text-primary font-medium">Rp 300,000</div>
-                    </div>
-                </div>
-                <!-- Sample Product 2 -->
-                <div class="flex gap-3">
-                    <img src="/api/placeholder/80/80" alt="Product 2" class="w-20 h-20 object-cover rounded-lg">
-                    <div class="flex-1">
-                        <h3 class="text-sm font-medium line-clamp-2">Celana Jeans Slim Fit</h3>
-                        <div class="text-sm text-gray-500 mt-1">1 x Rp 299,000</div>
-                        <div class="text-primary font-medium">Rp 299,000</div>
-                    </div>
-                </div>
+                @foreach($carts as $cart)
+                        <!-- Sample Product 1 -->
+                        <div class="flex gap-3">
+                            <img src="{{$cart->product->first_image_url}}" alt="Product 1" class="w-20 h-20 object-cover rounded-lg">
+                            <div class="flex-1">
+                                <h3 class="text-sm font-medium line-clamp-2">{{$cart->product->name}}</h3>
+                                <div class="text-sm text-gray-500 mt-1">{{$cart->quantity}} x Rp {{number_format($cart->product->price)}}</div>
+                                <div class="text-primary font-medium">Rp {{number_format($cart->product->price * $cart->quantity)}}</div>
+                            </div>
+                        </div>
+                    @endforeach
             </div>
         </div>
 
@@ -43,35 +36,45 @@
             <!-- Recipient Info -->
             <div>
                 <input type="text"
+                        wire:model="shippingData.recipient_name"
                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
                        placeholder="Nama lengkap penerima">
+
             </div>
 
             <div>
-                <input type="tel"
+                <input
+                    wire:model="shippingData.phone"
+                    type="tel"
                        class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
                        placeholder="Contoh: 08123456789">
             </div>
 
             <!-- Address -->
             <div>
-                <select class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
+                <select
+                    wire:model.live="shippingData.province_id"
+                    wire:click="loadProvinces"
+                    class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
                     <option value="">Pilih Provinsi</option>
-                    <option value="1">DKI Jakarta</option>
-                    <option value="2">Jawa Barat</option>
-                    <option value="3">Jawa Tengah</option>
+                    @foreach($provinces as $id => $name)
+                        <option value="{{$id}}">{{$name}}</option>
+                    @endforeach
                 </select>
             </div>
 
             <div>
-                <select class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
+                <select
+                    wire:model.live="shippingData.city_id"
+                    @if(!$shippingData['province_id']) disabled @endif
+                    class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
                     <option value="">Pilih Kabupaten/Kota</option>
-                    <option value="1">Jakarta Selatan</option>
-                    <option value="2">Jakarta Pusat</option>
-                    <option value="3">Jakarta Barat</option>
+                    @foreach($cities as $id => $name)
+                        <option value="{{$id}}">{{$name}}</option>
+                    @endforeach
                 </select>
             </div>
-
+            @if($isPro)
             <div>
                 <select class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary">
                     <option value="">Pilih Kecamatan</option>
@@ -80,7 +83,7 @@
                     <option value="3">Mampang Prapatan</option>
                 </select>
             </div>
-
+            @endif
             <div>
                 <textarea class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary focus:border-primary"
                           rows="3"
@@ -111,14 +114,16 @@
         <div class="flex justify-between items-start mb-4">
             <div>
                 <p class="text-sm text-gray-600">Total Pembayaran:</p>
-                <p class="text-lg font-semibold text-primary">Rp 614,000</p>
+                <p class="text-lg font-semibold text-primary">Rp {{number_format($total)}}</p>
             </div>
             <div class="text-right">
                 <p class="text-xs text-gray-500">3 Produk</p>
             </div>
         </div>
 
-        <button class="w-full h-12 flex items-center justify-center rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
+        <button
+            wire:click="createOrder"
+            class="w-full h-12 flex items-center justify-center rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
             Buat Pesanan
         </button>
     </div>
